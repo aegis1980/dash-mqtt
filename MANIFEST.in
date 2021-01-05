@@ -1,0 +1,7 @@
+include dash_mqtt/dash_mqtt.min.js
+include dash_mqtt/dash_mqtt.min.js.map
+include dash_mqtt/metadata.json
+include dash_mqtt/package-info.json
+include README.md
+include LICENSE
+include package.json
