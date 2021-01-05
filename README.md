@@ -1,4 +1,4 @@
-# dash-mqtt
+# Dash MQTT
 
 dash-mqtt is a Dash component library.
 
