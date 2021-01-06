@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import mqtt from 'mqtt'
-import PropTypes, { checkPropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 
 const DEFAULT_PORT = 1883;
 /**
