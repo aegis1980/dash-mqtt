@@ -2,8 +2,65 @@
   "src/lib/components/DashMqtt.react.js": {
     "description": "ExampleComponent is an example component.\r\nIt takes a property, `label`, and\r\ndisplays it.\r\nIt renders an input with the property `value`\r\nwhich is editable by the user.",
     "displayName": "DashMqtt",
-    "methods": [],
+    "methods": [
+      {
+        "name": "_init_mqtt_client",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
     "props": {
+      "state": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "This MQTT connection state (in the readyState prop) and any associated information.",
+        "defaultValue": {
+          "value": "{\r\n    connected : false, \r\n    reconnecting : false\r\n}",
+          "computed": false
+        }
+      },
+      "broker_url": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The MQTT broker endpoint (e.g. 'mqtt://test.mosquitto.org'). \r\nDefaults to 0.0.0.0 (localhost)"
+      },
+      "protocol": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "One the following protocols: 'mqtt', 'mqtts', 'tcp', 'tls', 'ws', 'wss'.\r\nDefaults to 'mqtt' which then is defaulted to 'ws' by MQTT.js \r\nFrom (https://github.com/mqttjs/MQTT.js/issues/628#issuecomment-345412483)\r\nThere is no way for JavaScript running in browsers to open TCP sockets so \"normal\" MQTT is impossible in browser apps. \r\nTo get around this limitation, MQTT.js uses MQTT over WebSockets instead when it detects it's running in a browser."
+      },
+      "broker_port": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The MQTT broker port, defaults to \r\nDefault to 9001"
+      },
+      "options": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "MQTT options (optional)."
+      },
+      "topics": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "string"
+          }
+        },
+        "required": false,
+        "description": "MQTT topics this component is subscribed to."
+      },
       "id": {
         "type": {
           "name": "string"
@@ -11,19 +68,19 @@
         "required": false,
         "description": "The ID used to identify this component in Dash callbacks."
       },
-      "label": {
+      "message": {
         "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": "A label that will be printed when this component is rendered."
-      },
-      "value": {
-        "type": {
-          "name": "string"
+          "name": "object"
         },
         "required": false,
-        "description": "The value displayed in the input."
+        "description": "Topic or topic and payload to send.\r\nWhen this property is set, a message is published\r\nThe topic is required, the payload is not."
+      },
+      "incoming": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Incoming message"
       },
       "setProps": {
         "type": {

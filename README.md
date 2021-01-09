@@ -1,6 +1,13 @@
 # Dash MQTT
 
-dash-mqtt is a Dash component library.
+`dash_mqtt` is a Dash component library for adding MQTT messaging functionality to your Dash apps.
+It is essentially a wrapper around [MQTT.js](https://github.com/mqttjs/MQTT.js).
+
+If you are looking to add MQTT to your Dash app, refer to instructions on project page here. 
+
+If you are want to adapt nuts-and-bolts code (and/or help) read on...
+
+---
 
 Get started with:
 1. Install Dash and its dependencies: https://dash.plotly.com/installation

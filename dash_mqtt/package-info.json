@@ -16,6 +16,7 @@
   "author": "aegis1980 <jonrobinson@hotmail.com>",
   "license": "MIT",
   "dependencies": {
+    "mqtt": "^4.2.6",
     "ramda": "^0.26.1"
   },
   "devDependencies": {
