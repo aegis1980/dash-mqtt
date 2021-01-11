@@ -7,19 +7,28 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
 
-
-MESSAGE_OUT_TOPIC = 'test_out'
-MESSAGE_IN_TOPIC = 'test_in'
+TEST_SERVER = 'broker.emqx.io'
+TEST_SERVER_PORT = 8083
+TEST_SERVER_PATH = 'mqtt'
+MESSAGE_OUT_TOPIC = 'testtopic'
+MESSAGE_IN_TOPIC = 'testtopic'
 
 app = dash.Dash(__name__)
 
 app.layout = html.Div([
     dash_mqtt.DashMqtt(
         id='mqtt',
-        broker_url='192.168.1.30',
+        broker_url=TEST_SERVER,
+        broker_port = TEST_SERVER_PORT,
+        broker_path = TEST_SERVER_PATH,
         topics=[MESSAGE_IN_TOPIC]
     ),
-    dcc.Input(id='message_to_send', debounce = True),
+    html.H1('MQTT echo'),
+    html.P('MQTT echo server to ' + TEST_SERVER + ' on port ' + str(TEST_SERVER_PORT)),
+    dcc.Input(
+        id='message_to_send',
+        placeholder='message to send',
+        debounce = True),
     html.Button('Send',id='send'),
     html.Div(id='return_message')
 ])
@@ -44,9 +53,8 @@ def display_output(n_clicks, message_payload):
     Input('mqtt', 'incoming')
 )
 def display_incoming_message(incoming_message):
-    if (incoming_message and incoming_message['payload'] and incoming_message['type'] == 'Buffer'):
-        bytelist = incoming_message['payload']['data']
-        return array.array('B', bytelist).tostring().decode('UTF-8')
+    if (incoming_message):
+        return incoming_message['payload']
     else:
         return dash.no_update
 

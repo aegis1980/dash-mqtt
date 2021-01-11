@@ -6,7 +6,7 @@ const DEFAULT_OPTIONS =  {
     keepalive: 30,
     clientId:  'dash_mqtt_' + Math.random().toString(16).substr(2, 8),
     protocolId: 'MQTT',
-    protocolVersion: 4,
+    protocolVersion: 5,
     clean: true,
     reconnectPeriod: 1000,
     connectTimeout: 30 * 1000,
@@ -19,7 +19,7 @@ const DEFAULT_OPTIONS =  {
     rejectUnauthorized: false
   }
 
-const DEFAULT_PORT = 9001;
+const DEFAULT_PORT = 8080; //for MQTT over websockets to mosquitto
 /**
  * ExampleComponent is an example component.
  * It takes a property, `label`, and
@@ -35,8 +35,13 @@ export default class DashMqtt extends Component {
         let {broker_url} = this.props;
         let {options} = this.props;
         const {topics} = this.props;
-
-        const port = (options && options.port) ? options.port : DEFAULT_PORT;
+        let {broker_port} = this.props;
+        const {broker_path} = this.props;
+        
+        if (!broker_port){
+            broker_port = (options && options.port) ? options.port : DEFAULT_PORT;
+        }
+        
 
         options = options ? options : DEFAULT_OPTIONS;
 
@@ -52,15 +57,14 @@ export default class DashMqtt extends Component {
 
 
         if ((broker_url.match(/:/g)||[]).length ===  1){
-            broker_url = broker_url + ':' + port.toString();
+            broker_url = broker_url + ':' + broker_port.toString();
         }
 
-        if (options){
-            this.client = mqtt.connect(broker_url, options);
-        } else {
-            this.client = mqtt.connect(broker_url);
+        if(broker_path){
+            broker_url = broker_url +'/'+broker_path
         }
-        
+
+        this.client = mqtt.connect(broker_url, options);        
         
         const self = this;
 
@@ -90,18 +94,23 @@ export default class DashMqtt extends Component {
             
         })
 
-        this.client.on('message', function (topic, payload){
+        this.client.on('message', function (topic, payload, packet){
+
+            let my_payload = payload;
+            if (Buffer.isBuffer(payload)){
+                my_payload = payload.toString();
+            }
             self.props.setProps({
                 incoming:{
                     topic: topic,
-                    payload: payload
+                    payload: my_payload,
+                    packet: packet
                 }
             })
-           // self.client.end()
         })
 
         this.client.on('error', function(error){
-            console.error(error.message);        
+            console.log(error);        
         })
     }
 
@@ -156,7 +165,6 @@ DashMqtt.propTypes = {
 
     /**
      * The MQTT broker endpoint (e.g. 'mqtt://test.mosquitto.org'). 
-     * Defaults to 0.0.0.0 (localhost)
      */
     broker_url: PropTypes.string,
 
@@ -171,12 +179,21 @@ DashMqtt.propTypes = {
 
     /**
      * The MQTT broker port, defaults to 
-     * Default to 9001
+     * Default to 8080 as MQTT over WebSockets, unencrypted as per
+     * https://test.mosquitto.org/
       */
     broker_port: PropTypes.number,
 
+
+    /**
+     * MQTT broker path
+     */
+    broker_path: PropTypes.string,
+
+
     /**
      * MQTT options (optional).
+     * Otherwise defaults to DEFAULT_OPTIONS
      */
     options: PropTypes.object,
 

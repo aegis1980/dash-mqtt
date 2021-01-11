@@ -28,7 +28,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "The MQTT broker endpoint (e.g. 'mqtt://test.mosquitto.org'). \r\nDefaults to 0.0.0.0 (localhost)"
+        "description": "The MQTT broker endpoint (e.g. 'mqtt://test.mosquitto.org')."
       },
       "protocol": {
         "type": {
@@ -42,14 +42,21 @@
           "name": "number"
         },
         "required": false,
-        "description": "The MQTT broker port, defaults to \r\nDefault to 9001"
+        "description": "The MQTT broker port, defaults to \r\nDefault to 8080 as MQTT over WebSockets, unencrypted as per\r\nhttps://test.mosquitto.org/"
+      },
+      "broker_path": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "MQTT broker path"
       },
       "options": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "MQTT options (optional)."
+        "description": "MQTT options (optional).\r\nOtherwise defaults to DEFAULT_OPTIONS"
       },
       "topics": {
         "type": {

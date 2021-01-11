@@ -11,15 +11,14 @@ ExampleComponent is an example component. It takes a property, `label`, and di
 
 \usage{
 ''DashMqtt(state=NULL, broker_url=NULL, protocol=NULL,
-broker_port=NULL, options=NULL, topics=NULL, id=NULL,
-message=NULL, incoming=NULL)
+broker_port=NULL, broker_path=NULL, options=NULL,
+topics=NULL, id=NULL, message=NULL, incoming=NULL)
 }
 
 \arguments{
 \item{state}{Named list. This MQTT connection state (in the readyState prop) and any associated information.}
 
-\item{broker_url}{Character. The MQTT broker endpoint (e.g. 'mqtt://test.mosquitto.org'). 
-Defaults to 0.0.0.0 (localhost)}
+\item{broker_url}{Character. The MQTT broker endpoint (e.g. 'mqtt://test.mosquitto.org').}
 
 \item{protocol}{Character. One the following protocols: 'mqtt', 'mqtts', 'tcp', 'tls', 'ws', 'wss'.
 Defaults to 'mqtt' which then is defaulted to 'ws' by MQTT.js 
@@ -28,9 +27,13 @@ There is no way for JavaScript running in browsers to open TCP sockets so "norma
 To get around this limitation, MQTT.js uses MQTT over WebSockets instead when it detects it's running in a browser.}
 
 \item{broker_port}{Numeric. The MQTT broker port, defaults to 
-Default to 9001}
+Default to 8080 as MQTT over WebSockets, unencrypted as per
+https://test.mosquitto.org/}
 
-\item{options}{Named list. MQTT options (optional).}
+\item{broker_path}{Character. MQTT broker path}
+
+\item{options}{Named list. MQTT options (optional).
+Otherwise defaults to DEFAULT_OPTIONS}
 
 \item{topics}{List of characters. MQTT topics this component is subscribed to.}
 
