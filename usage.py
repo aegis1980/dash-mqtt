@@ -1,6 +1,4 @@
 
-import array
-
 import dash_mqtt
 import dash
 from dash.dependencies import Input, Output, State

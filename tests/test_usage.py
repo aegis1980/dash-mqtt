@@ -8,22 +8,22 @@ def test_render_component(dash_duo):
     app = import_app('usage')
     dash_duo.start_server(app)
 
+    message = 'Hello from dash_mqtt'
+
     # Get the generated component input with selenium
     # The html input will be a children of the #input dash component
-    my_input_component = dash_duo.find_element('#message_to_end > input')
+    my_input_component = dash_duo.find_element('#message_to_send')
 
-    assert 'my-value' == my_input_component.get_attribute('value')
 
     # Clear the input
     dash_duo.clear_input(my_input_component)
 
     # Send keys to the custom input.
-    my_input_component.send_keys('Hello from dash_mqtt')
+    my_input_component.send_keys(message)
 
     # Get the send button input with selenium
     my_send_btn_component = dash_duo.find_element('#send')
 
-    assert 'my-clicks' == my_send_btn_component.get_attribute('n_clicks')
 
     # Clear the input
     dash_duo.clear_input(my_input_component)
@@ -37,4 +37,4 @@ def test_render_component(dash_duo):
 
     # Wait for the text to equal, if after the timeout (default 10 seconds)
     # the text is not equal it will fail the test.
-    dash_duo.wait_for_text_to_equal('#outputo', 'You have entered Hello dash')
+    dash_duo.wait_for_text_to_equal('#return_message', message)

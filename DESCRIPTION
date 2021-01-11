@@ -1,7 +1,7 @@
 Package: dashMqtt
-Title: Project Description
+Title: dash_mqtt is a Dash component library for adding MQTT messaging functionality to your Dash apps.
 Version: 0.0.1
-Description: Project Description
+Description: dash_mqtt is a Dash component library for adding MQTT messaging functionality to your Dash apps.
 Depends: R (>= 3.0.2)
 Imports: 
 Suggests: 
