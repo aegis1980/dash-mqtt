@@ -120,10 +120,17 @@ export default class DashMqtt extends Component {
 
     componentDidUpdate(prevProps) {
         const {message} = this.props;
-        // Send messages.
-        if (message) {
+        // Send messages, if changed.
+
+        if (
+            (message !== undefined && prevProps.message === undefined) ||
+            (message !== undefined && prevProps.message !== undefined &&
+            ((message.topic !== prevProps.message.topic) || 
+            (message.payload !== undefined && prevProps.message.payload !== undefined &&
+                message.payload !== prevProps.message.payload)
+            ))) { 
             if (this.props.state.connected) {
-                if (message.payload){
+                if (message.payload !== undefined){
                     this.client.publish(message.topic, message.payload);
                 } else {
                     this.client.publish(message.topic);
