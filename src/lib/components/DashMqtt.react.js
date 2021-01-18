@@ -29,7 +29,7 @@ const DEFAULT_PORT = 8080; //for MQTT over websockets to mosquitto
  */
 export default class DashMqtt extends Component {
 
-    _init_mqtt_client() {
+    _initMqttClient() {
         // Create a new client.
         let {protocol} = this.props;
         let {broker_url} = this.props;
@@ -114,21 +114,37 @@ export default class DashMqtt extends Component {
         })
     }
 
-    componentDidMount() {
-        this._init_mqtt_client()
+
+    _whatChanged(prevProps){
+        return Object.keys(this.props)
+        .filter(key => {
+          return prevProps[key] !== this.props[key];
+        })
+        /* .map(key => {
+          console.log(
+            'changed property:',
+            key,
+            'from',
+            prevProps[key],
+            'to',
+            this.props[key]
+          );
+        }); */
     }
 
+    componentDidMount() {
+        this._initMqttClient()
+    }
+
+
+
     componentDidUpdate(prevProps) {
+        
+        const whatChanged = this._whatChanged(prevProps)
+
         const {message} = this.props;
         // Send messages, if changed.
-
-        if (
-            (message !== undefined && prevProps.message === undefined) ||
-            (message !== undefined && prevProps.message !== undefined &&
-            ((message.topic !== prevProps.message.topic) || 
-            (message.payload !== undefined && prevProps.message.payload !== undefined &&
-                message.payload !== prevProps.message.payload)
-            ))) { 
+        if (whatChanged.includes("message")) { 
             if (this.props.state.connected) {
                 if (message.payload !== undefined){
                     this.client.publish(message.topic, message.payload);

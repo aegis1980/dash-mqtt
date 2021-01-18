@@ -4,10 +4,22 @@
     "displayName": "DashMqtt",
     "methods": [
       {
-        "name": "_init_mqtt_client",
+        "name": "_initMqttClient",
         "docblock": null,
         "modifiers": [],
         "params": [],
+        "returns": null
+      },
+      {
+        "name": "_whatChanged",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "prevProps",
+            "type": null
+          }
+        ],
         "returns": null
       }
     ],

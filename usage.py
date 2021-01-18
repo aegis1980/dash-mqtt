@@ -5,8 +5,8 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
 
-TEST_SERVER = 'broker.emqx.io'
-TEST_SERVER_PORT = 8083
+TEST_SERVER = 'broker.hivemq.com'#'broker.emqx.io'
+TEST_SERVER_PORT = 8000
 TEST_SERVER_PATH = 'mqtt'
 MESSAGE_OUT_TOPIC = 'testtopic'
 MESSAGE_IN_TOPIC = 'testtopic'
@@ -18,7 +18,7 @@ app.layout = html.Div([
         id='mqtt',
         broker_url=TEST_SERVER,
         broker_port = TEST_SERVER_PORT,
-        broker_path = TEST_SERVER_PATH,
+        #broker_path = TEST_SERVER_PATH,
         topics=[MESSAGE_IN_TOPIC]
     ),
     html.H1('MQTT echo'),
@@ -38,7 +38,7 @@ app.layout = html.Div([
         State('message_to_send', 'value')
     )
 def display_output(n_clicks, message_payload):
-    if n_clicks:
+    if n_clicks and n_clicks>0:
         return {
             'topic': MESSAGE_OUT_TOPIC,
             'payload' : message_payload
