@@ -20,6 +20,7 @@ setup(
     author=package['author'],
     long_description=long_description,
     long_description_content_type='text/markdown', 
+    url= 'https://github.com/aegis1980/dash-mqtt',
     packages=[package_name],
     include_package_data=True,
     license=package['license'],

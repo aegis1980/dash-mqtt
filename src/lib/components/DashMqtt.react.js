@@ -120,23 +120,11 @@ export default class DashMqtt extends Component {
         .filter(key => {
           return prevProps[key] !== this.props[key];
         })
-        /* .map(key => {
-          console.log(
-            'changed property:',
-            key,
-            'from',
-            prevProps[key],
-            'to',
-            this.props[key]
-          );
-        }); */
     }
 
     componentDidMount() {
         this._initMqttClient()
     }
-
-
 
     componentDidUpdate(prevProps) {
         
