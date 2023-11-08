@@ -44,6 +44,10 @@ export default class DashMqtt extends Component {
         
 
         options = options ? options : DEFAULT_OPTIONS;
+        //password to buffer if existend
+        if (options && options.password) {
+            options.password = Buffer.from(options.password);
+          }
 
         protocol = protocol ? protocol : 'mqtt'
         broker_url = broker_url ? broker_url : location.host;  
