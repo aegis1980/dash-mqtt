@@ -2,11 +2,11 @@
 import dash_mqtt
 import dash
 from dash.dependencies import Input, Output, State
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html
+from dash import dcc
 
-TEST_SERVER = 'broker.emqx.io'
-TEST_SERVER_PORT = 8083
+TEST_SERVER = 'localhost'
+TEST_SERVER_PORT = 9001
 TEST_SERVER_PATH = 'mqtt'
 MESSAGE_OUT_TOPIC = 'testtopic'
 MESSAGE_IN_TOPIC = 'testtopic'
@@ -16,6 +16,7 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     dash_mqtt.DashMqtt(
         id='mqtt',
+        options={"username": "admin", "password": "password"},
         broker_url=TEST_SERVER,
         broker_port = TEST_SERVER_PORT,
         broker_path = TEST_SERVER_PATH,
@@ -41,7 +42,9 @@ def display_output(n_clicks, message_payload):
     if n_clicks and n_clicks>0:
         return {
             'topic': MESSAGE_OUT_TOPIC,
-            'payload' : message_payload
+            'payload' : message_payload,
+            'retain' : "True",
+            'qos' : 1
         }
     return dash.no_update
 

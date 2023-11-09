@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import mqtt from 'mqtt'
+import * as mqtt from 'mqtt/dist/mqtt'
 import PropTypes from 'prop-types';
+import { Buffer } from 'buffer';
 
 const DEFAULT_OPTIONS =  {
     keepalive: 30,
@@ -134,8 +135,16 @@ export default class DashMqtt extends Component {
         // Send messages, if changed.
         if (whatChanged.includes("message")) { 
             if (this.props.state.connected) {
+                let qoslevel = 0;
+                if (message.qos != undefined){
+                    qoslevel = (parseInt(message.qos) >= 0 && parseInt(message.qos) < 3) ? parseInt(message.qos) : qoslevel = 0;
+                }
+                let retainvalue = false;
+                if (message.retain != undefined){
+                    retainvalue = true;
+                }
                 if (message.payload !== undefined){
-                    this.client.publish(message.topic, message.payload);
+                    this.client.publish(message.topic, message.payload, { qos: qoslevel, retain: retainvalue });
                 } else {
                     this.client.publish(message.topic);
                 }
