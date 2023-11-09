@@ -16,7 +16,7 @@
   "author": "Jon Robinson <jonrobinson@hotmail.com>",
   "license": "MIT",
   "dependencies": {
-    "mqtt": "^4.3.7",
+    "mqtt": "^5.0.0",
     "ramda": "^0.26.1"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "react-dom": "^16.8.6",
     "style-loader": "^2.0.0",
     "styled-jsx": "^5.1.2",
-    "webpack": "^4.46.0",
+    "webpack": "^5.89.0",
     "webpack-cli": "^4.10.0"
   },
   "engines": {

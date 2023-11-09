@@ -42,7 +42,9 @@ def display_output(n_clicks, message_payload):
     if n_clicks and n_clicks>0:
         return {
             'topic': MESSAGE_OUT_TOPIC,
-            'payload' : message_payload
+            'payload' : message_payload,
+            'retain' : "True",
+            'qos' : 1
         }
     return dash.no_update
 
