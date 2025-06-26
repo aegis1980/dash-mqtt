@@ -20,6 +20,9 @@ const DEFAULT_OPTIONS =  {
   }
 
 const DEFAULT_PORT = 8080; //for MQTT over websockets to mosquitto
+
+const DEFAULT_MESSAGE_PROCESSING_DELAY_MS=10;
+
 /**
  * ExampleComponent is an example component.
  * It takes a property, `label`, and
@@ -28,6 +31,12 @@ const DEFAULT_PORT = 8080; //for MQTT over websockets to mosquitto
  * which is editable by the user.
  */
 export default class DashMqtt extends Component {
+    constructor(props) {
+        super(props);
+        this.messageQueue = [];
+        this.isProcessing = false;
+        this.awaitingCallback = false;
+    }
 
     _initMqttClient() {
         // Create a new client.
@@ -64,8 +73,8 @@ export default class DashMqtt extends Component {
             broker_url = broker_url +'/'+broker_path
         }
 
-        this.client = mqtt.connect(broker_url, options);        
-        
+        this.client = mqtt.connect(broker_url, options);
+
         const self = this;
 
         this.client.on('connect', function (){
@@ -94,26 +103,46 @@ export default class DashMqtt extends Component {
             
         })
 
-        this.client.on('message', function (topic, payload, packet){
+        this.client.on('message', (topic, payload, packet) => {
+            const message = {
+                topic,
+                payload: Buffer.isBuffer(payload) ? payload.toString() : payload,
+                packet
+            };
+            this.messageQueue.push(message);
+            this._processQueue();
+        });
 
-            let my_payload = payload;
-            if (Buffer.isBuffer(payload)){
-                my_payload = payload.toString();
-            }
-            self.props.setProps({
-                incoming:{
-                    topic: topic,
-                    payload: my_payload,
-                    packet: packet
-                }
-            })
-        })
-
-        this.client.on('error', function(error){
-            console.log(error);        
-        })
+        this.client.on('error', function (error) {
+            console.log(error);
+        });
     }
 
+    _processQueue() {
+        if (this.isProcessing || this.awaitingCallback) return;
+        if (this.messageQueue.length === 0) return;
+
+        this.isProcessing = true;
+
+        const delay = this.props.message_processing_delay_ms || DEFAULT_MESSAGE_PROCESSING_DELAY_MS;
+
+        const processNext = () => {
+            if (this.awaitingCallback || this.messageQueue.length === 0) {
+                this.isProcessing = false;
+                return;
+            }
+
+            const { topic, payload, packet } = this.messageQueue.shift();
+            this.props.setProps({
+                incoming: { topic, payload, packet }
+            });
+
+            this.awaitingCallback = true; // pause queue until Dash confirms callback
+            this.isProcessing = false;
+        };
+
+        processNext();
+    }
 
     _whatChanged(prevProps){
         return Object.keys(this.props)
@@ -127,8 +156,13 @@ export default class DashMqtt extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        
-        const whatChanged = this._whatChanged(prevProps)
+        const whatChanged = this._whatChanged(prevProps);
+
+        // Resume queue after callbackComplete changes
+        if (whatChanged.includes("callback_complete")) {
+            this.awaitingCallback = false;
+            this._processQueue(); // Try to continue processing
+        }
 
         const {message} = this.props;
         // Send messages, if changed.
@@ -161,7 +195,7 @@ export default class DashMqtt extends Component {
 
 DashMqtt.defaultProps = {
     state: {
-        connected : false, 
+        connected : false,
         reconnecting : false
     }
 };
@@ -225,6 +259,11 @@ DashMqtt.propTypes = {
      */
     message: PropTypes.object,
 
+    /**
+     * Delay in milliseconds between processing incoming MQTT messages.
+    */
+    message_processing_delay_ms: PropTypes.number,
+
 
     /**
      * Incoming message 
@@ -235,5 +274,12 @@ DashMqtt.propTypes = {
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.
      */
-    setProps: PropTypes.func
+     setProps: PropTypes.func,
+
+     callback_complete: PropTypes.oneOfType([
+        PropTypes.bool,
+        PropTypes.number,
+        PropTypes.string
+    ]),
 };
+

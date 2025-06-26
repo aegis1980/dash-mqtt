@@ -1,6 +1,6 @@
 {
   "name": "dash_mqtt",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "dash_mqtt is a Dash component library for adding MQTT messaging functionality to your Dash apps.",
   "main": "build/index.js",
   "scripts": {
